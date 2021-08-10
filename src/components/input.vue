@@ -8,10 +8,11 @@
     <div class="bg-warning text-dark">
       {{ error }}
     </div>
-    <div v-if="showResponse" class="container mt-4 info bg-white text-dark">
-      <div>
-        <b-img-lazy :src="imgUrl" if="img" />
-      </div>
+    <div
+      v-if="showResponse"
+      class="container mt-4 mb-4 info bg-white text-dark"
+    >
+      <div v-html="media"></div>
       <div><b>Root: </b>{{ root }}</div>
       <div><b>Owner: </b>{{ owner }}</div>
       <div><b>Author: </b>{{ author }}</div>
@@ -23,6 +24,7 @@
 </template>
 <script>
 import ton from "../api/ton.js";
+
 export default {
   data() {
     return {
@@ -33,7 +35,7 @@ export default {
       addrData: null,
       number: null,
       amount: null,
-      imgUrl: null,
+      media: null,
       error: null,
       showResponse: false,
     };
@@ -67,7 +69,13 @@ export default {
           }
         });
 
-        this.imgUrl = "https://ipfs.io/ipfs/" + code;
+        let url = "https://ipfs.io/ipfs/" + code;
+        let content_type = (await fetch(url)).headers.get("content-type");
+        if (content_type.indexOf("image") == 0) {
+          this.media = `<img style="max-width:500px; max-height: 500px" src="${url}" id="img" />`;
+        } else {
+          this.media = `<iframe src="${url}" style="width: 500px; height: 500px"></iframe>`;
+        }
       }
     },
   },
@@ -77,10 +85,5 @@ export default {
 .info div {
   margin-top: 3rem;
   font-size: 1.4rem;
-}
-
-#img {
-  max-width: 500px;
-  max-height: 500px;
 }
 </style>
