@@ -72,7 +72,7 @@ export default {
         let url = "https://ipfs.io/ipfs/" + code;
         let content_type = (await fetch(url)).headers.get("content-type");
         if (content_type.indexOf("image") == 0) {
-          this.media = `<img style="max-width:500px; max-height: 500px" src="${url}" id="img" />`;
+          this.media = `<img style="max-width:500px; max-height: 500px" src="${url}"/>`;
         } else {
           this.media = `<iframe src="${url}" style="width: 500px; height: 500px"></iframe>`;
         }
