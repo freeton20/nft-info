@@ -1,8 +1,8 @@
 {
-  "name": "tonspeed",
+  "name": "nft-info",
   "version": "1.0.0",
   "private": true,
-  "description": "TON NETWORK SPEED MONITOR",
+  "description": "NFT Info (grandbazar.io)",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -52,6 +52,6 @@
     "last 2 versions",
     "not dead"
   ],
-  "_id": "tonspeed@1.0.0",
+  "_id": "nft-info@1.0.0",
   "readme": "ERROR: No README data found!"
 }

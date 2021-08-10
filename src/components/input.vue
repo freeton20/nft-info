@@ -1,31 +1,23 @@
 <template>
   <div>
-    <b-form-input size="lg"
+    <b-form-input
+      size="lg"
       v-model="address"
       placeholder="Enter token address"
     ></b-form-input>
-    <div class="container mt-4 info bg-white text-dark">
+    <div class="bg-warning text-dark">
+      {{ error }}
+    </div>
+    <div v-if="showResponse" class="container mt-4 info bg-white text-dark">
       <div>
-        {{ root }}
+        <b-img-lazy :src="imgUrl" if="img" />
       </div>
-      <div>
-        {{ owner }}
-      </div>
-      <div>
-        {{ author }}
-      </div>
-      <div>
-        {{ addrData }}
-      </div>
-      <div>
-        {{ number }}
-      </div>
-      <div>
-        {{ amount }}
-      </div>
-      <div class="bg-warning text-dark">
-        {{ error }}
-      </div>
+      <div><b>Root: </b>{{ root }}</div>
+      <div><b>Owner: </b>{{ owner }}</div>
+      <div><b>Author: </b>{{ author }}</div>
+      <div><b>Data address: </b>{{ addrData }}</div>
+      <div><b>Number: </b>{{ number }}</div>
+      <div><b>Amount: </b>{{ amount }}</div>
     </div>
   </div>
 </template>
@@ -41,28 +33,41 @@ export default {
       addrData: null,
       number: null,
       amount: null,
+      imgUrl: null,
       error: null,
+      showResponse: false,
     };
   },
   watch: {
     address: async function (val) {
-        if(val.length < 10){
-            return;
-        }
+      if (val.length < 10) {
+        return;
+      }
       const data = await ton.getInfo(val);
       if (data.message !== undefined) {
         this.error = data.message;
         this.root = this.owner = this.author = this.number = this.amount = null;
+        this.showResponse = false;
       }
 
       if (data.addrRoot !== undefined) {
-        this.root = "Root: " + data.addrRoot;
-        this.owner = "Owner: " + data.addrOwner;
-        this.author = "Author: " + data.addrAuthor;
-        this.addrData = "Data address: " + data.addrData;
-        this.number = "Number: " + data.number;
-        this.amount = "Amount: " + data.amount;
+        this.showResponse = true;
+        this.root = data.addrRoot;
+        this.owner = data.addrOwner;
+        this.author = data.addrAuthor;
+        this.addrData = data.addrData;
+        this.number = data.number;
+        this.amount = data.amount;
         this.error = null;
+
+        let code = "";
+        Buffer.from(data.url, "hex").forEach(function (el) {
+          if (el !== 0) {
+            code = code + String.fromCharCode(el);
+          }
+        });
+
+        this.imgUrl = "https://ipfs.io/ipfs/" + code;
       }
     },
   },
@@ -72,5 +77,10 @@ export default {
 .info div {
   margin-top: 3rem;
   font-size: 1.4rem;
+}
+
+#img {
+  max-width: 500px;
+  max-height: 500px;
 }
 </style>
